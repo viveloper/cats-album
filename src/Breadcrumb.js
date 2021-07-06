@@ -16,8 +16,8 @@ function Breadcrumb({ $app, initialState }) {
       ${this.state
         .map(
           (node, index) => `
-        <div class="nav-item" data-index="${index}">${node.name}</div>
-      `
+            <div class="nav-item" data-index="${index}">${node.name}</div>
+          `
         )
         .join('')}
     `;

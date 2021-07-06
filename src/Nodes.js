@@ -1,7 +1,23 @@
-function Nodes({ $app, initialState, onClick }) {
+function Nodes({ $app, initialState, onClick, onBack }) {
   this.state = initialState;
 
-  this.$target = document.createElement('ul');
+  this.$target = document.createElement('div');
+  this.$target.className = 'Nodes';
+  this.$target.addEventListener('click', (e) => {
+    const node = e.target.closest('.Node');
+    if (!node) {
+      return;
+    }
+    const { nodeId } = node.dataset;
+    if (!nodeId) {
+      this.onBack();
+      return;
+    }
+    const selectedNode = this.state.nodes.find((node) => node.id === nodeId);
+    if (selectedNode) {
+      this.onClick(selectedNode);
+    }
+  });
   $app.appendChild(this.$target);
 
   this.setState = (nextState) => {
@@ -10,6 +26,7 @@ function Nodes({ $app, initialState, onClick }) {
   };
 
   this.onClick = onClick;
+  this.onBack = onBack;
 
   this.render = () => {
     if (this.state.nodes) {
@@ -20,30 +37,18 @@ function Nodes({ $app, initialState, onClick }) {
               ? './assets/file.png'
               : './assets/directory.png';
           return `
-          <div class="Node" data-node-id="${node.id}">
-            <img src="${iconPath}" />
-            <div>${node.name}</div>
-          </div>
-        `;
+              <div class="Node" data-node-id="${node.id}">
+                  <img src="${iconPath}" />
+                  <div>${node.name}</div>
+              </div>
+          `;
         })
         .join('');
 
       this.$target.innerHTML = !this.state.isRoot
-        ? `<div class="Node"><img src="/assets/prev.png" /></div>${nodesTemplate}`
+        ? `<div class="Node"><img src="./assets/prev.png" /></div>${nodesTemplate}`
         : nodesTemplate;
     }
-
-    this.$target.querySelectorAll('.Node').forEach(($node) => {
-      $node.addEventListener('click', (e) => {
-        const { nodeId } = e.target.dataset;
-        const selectedNode = this.state.nodes.find(
-          (node) => node.id === nodeId
-        );
-        if (selectedNode) {
-          this.onClick(selectedNode);
-        }
-      });
-    });
   };
 }
 
