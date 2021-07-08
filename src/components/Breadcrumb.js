@@ -1,16 +1,17 @@
-function Breadcrumb({ $app, initialState }) {
-  this.state = initialState;
+class Breadcrumb {
+  constructor({ $container, initialState }) {
+    this.state = initialState;
+    this.$target = document.createElement('nav');
+    this.$target.className = 'Breadcrumb';
+    $container.appendChild(this.$target);
+  }
 
-  this.$target = document.createElement('nav');
-  this.$target.className = 'Breadcrumb';
-  $app.appendChild(this.$target);
-
-  this.setState = (nextState) => {
+  setState(nextState) {
     this.state = nextState;
     this.render();
-  };
+  }
 
-  this.render = () => {
+  render() {
     this.$target.innerHTML = `
       <div class="nav-item">root</div>
       ${this.state
@@ -21,7 +22,7 @@ function Breadcrumb({ $app, initialState }) {
         )
         .join('')}
     `;
-  };
+  }
 }
 
 export default Breadcrumb;
